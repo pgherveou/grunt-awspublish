@@ -1,6 +1,6 @@
 {
   "name": "grunt-awsPublish",
-  "description": "Publish your assets to amazon s3",
+  "description": "Publish and sync your files to amazon s3",
   "version": "0.1.0",
   "homepage": "https://github.com/pgherveou/awsPublish",
   "author": {

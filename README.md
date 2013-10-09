@@ -1,6 +1,6 @@
 # grunt-awsPublish
 
-> Publish your assets to amazon s3
+> Publish and sync your files to amazon s3
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
