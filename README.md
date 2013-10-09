@@ -1,4 +1,4 @@
-# grunt-awsPublish
+# grunt-awspublish
 
 > Publish and sync your files to amazon s3
 
@@ -8,23 +8,23 @@ This plugin requires Grunt `~0.4.1`
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
-npm install grunt-awsPublish --save-dev
+npm install grunt-awspublish --save-dev
 ```
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
 
 ```js
-grunt.loadNpmTasks('grunt-awsPublish');
+grunt.loadNpmTasks('grunt-awspublish');
 ```
 
-## The "awsPublish" task
+## The "awspublish" task
 
 ### Overview
-In your project's Gruntfile, add a section named `awsPublish` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `awspublish` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  awsPublish: {
+  awspublish: {
     options: {
       key: '...', /* amazon api key */
       secret: '...', /* amazon api secret */
@@ -63,7 +63,7 @@ Default value: `{'x-amz-acl': 'public-read'}`
 
 ```js
 grunt.initConfig({
-  awsPublish: {
+  awspublish: {
     'test1': {
       options: {
         key: '<%= aws.key %>',

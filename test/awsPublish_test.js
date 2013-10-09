@@ -24,7 +24,7 @@ var grunt = require('grunt'),
     test.ifError(value)
 */
 
-exports.awsPublish = {
+exports.awspublish = {
   setUp: function(done) {
     // setup here if necessary
     done();

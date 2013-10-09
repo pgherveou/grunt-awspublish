@@ -10,10 +10,10 @@ var crypto = require('crypto'),
     zlib = require('zlib');
 
 /*
- * grunt-awsPublish
- * https://github.com/pgherveou/awsPublish
+ * grunt-awspublish
+ * https://github.com/pgherveou/awspublish
  *
- * awsPublish: {
+ * awspublish: {
  *   options: {
  *     key: '...',
  *     secret: '...',
@@ -185,7 +185,7 @@ module.exports = function (grunt) {
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
-  grunt.registerMultiTask('awsPublish', 'Publish and sync your files to amazon s3', function() {
+  grunt.registerMultiTask('awspublish', 'Publish and sync your files to amazon s3', function() {
 
     // make file public by default
     var options = this.options({

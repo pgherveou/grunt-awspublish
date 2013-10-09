@@ -1,23 +1,23 @@
 {
-  "name": "grunt-awsPublish",
+  "name": "grunt-awspublish",
   "description": "Publish and sync your files to amazon s3",
   "version": "0.1.0",
-  "homepage": "https://github.com/pgherveou/awsPublish",
+  "homepage": "https://github.com/pgherveou/awspublish",
   "author": {
     "name": "PG",
     "email": "pgherveou@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pgherveou/awsPublish.git"
+    "url": "git://github.com/pgherveou/awspublish.git"
   },
   "bugs": {
-    "url": "https://github.com/pgherveou/awsPublish/issues"
+    "url": "https://github.com/pgherveou/awspublish/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/pgherveou/awsPublish/blob/master/LICENSE-MIT"
+      "url": "https://github.com/pgherveou/awspublish/blob/master/LICENSE-MIT"
     }
   ],
   "main": "Gruntfile.js",
