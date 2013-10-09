@@ -218,7 +218,7 @@ module.exports = function (grunt) {
     flowActions.push(function (cb) {
 
       // Iterate over all specified file groups.
-      grunt.util.async.forEach(tasks, function (task, cb) {
+      grunt.util.async.forEachLimit(tasks, 5, function (task, cb) {
         processFile(client, task, cb);
       }, cb);
     });
