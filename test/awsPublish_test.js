@@ -35,7 +35,7 @@ exports.awspublish = {
     client.list({ prefix: 'test' }, function (err, data) {
       var files = _.map(data.Contents, 'Key');
       test.equal(null, err);
-      test.equal(2, files.length);
+      test.equal(4, files.length);
       test.equal('test/bar.txt', files[0]);
       test.equal('test/foo.html', files[1]);
       test.done();

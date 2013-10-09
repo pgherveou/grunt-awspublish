@@ -30,6 +30,7 @@ grunt.initConfig({
       secret: '...', /* amazon api secret */
       bucket: '...', /* amazon d3 bucket */
       sync: true, /* optional keep s3 dests in sync with local disk */
+      syncIgnore: [], /* files matching this pattern will be ignored */
       headers: {  /* headers to apply */
         'x-amz-acl': 'public-read',
         'Expires': 'Tue, 07 Oct 2014 12:00:00 GMT',
@@ -55,6 +56,12 @@ Default value: `false`
 
 Keep s3 dest in sync with local disk (old files will be deleted)
 
+#### options.syncIgnore
+Type: `Array|String`
+Default value: ``
+
+files matching this won't be deleted from s3 during sync
+
 #### options.headers
 Type: `Object`
 Default value: `{'x-amz-acl': 'public-read'}`
@@ -70,6 +77,7 @@ grunt.initConfig({
         secret: '<%= aws.secret %>',
         bucket: '<%= aws.bucket %>',
         sync: true,
+        syncIgnore: ['test/ignore-me/**']
         headers: {
           Expires: 'Tue, 07 Oct 2014 12:00:00 GMT'
         }

@@ -132,6 +132,14 @@ module.exports = function (grunt) {
       // add content-type header
       task.headers['Content-Type'] = mime.lookup(task.file);
 
+      // public by default
+      if(!task.headers['x-amz-acl']) {
+        task.headers['x-amz-acl'] = 'public-read';
+      }
+
+      // add content-type header
+      task.headers['Content-Type'] = mime.lookup(task.file);
+
       // add Content-Length header
       task.headers['Content-Length'] = buf.length;
 
@@ -163,7 +171,7 @@ module.exports = function (grunt) {
    * @api private
    */
 
-  function deleteMultiple (client, localFiles, prefix, cb) {
+  function deleteMultiple (client, localFiles, prefix, ignore, cb) {
 
     // list remote files
     client.list({prefix: prefix}, function (err, data) {
@@ -171,6 +179,11 @@ module.exports = function (grunt) {
           removeList = _.reject(s3Files, function (file) {
             return localFiles.indexOf(file) !== -1;
           });
+
+      // reject files matching ignore pattern
+      removeList = _.reject(removeList, function (f) {
+        return grunt.file.isMatch(ignore, f);
+      });
 
       // remove files
       if (removeList.length) {
@@ -188,9 +201,7 @@ module.exports = function (grunt) {
   grunt.registerMultiTask('awspublish', 'Publish and sync your files to amazon s3', function() {
 
     // make file public by default
-    var options = this.options({
-        'x-amz-acl': 'public-read'
-      }),
+    var options = this.options({syncIgnore : ''}),
       client = knox.createClient(options),
       flowActions = [], deleteActions = [],
       tasks = [];
@@ -236,7 +247,7 @@ module.exports = function (grunt) {
 
         // add delete action
         deleteActions.push(function (cb) {
-          deleteMultiple(client, localFiles, prefix, cb);
+          deleteMultiple(client, localFiles, prefix, options.syncIgnore, cb);
         });
       });
 

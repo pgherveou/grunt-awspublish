@@ -39,6 +39,7 @@ module.exports = function(grunt) {
           secret: '<%= aws.secret %>',
           bucket: '<%= aws.bucket %>',
           sync: true,
+          syncIgnore: ['test/ignore-me/**'],
           headers: {
             foo: 'bar'
           }
