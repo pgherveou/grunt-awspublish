@@ -78,9 +78,9 @@ module.exports = function (grunt) {
       if (identical) {
         grunt.log.writeln('[skip]    ' + task.file);
       } else if (res.headers.etag) {
-        grunt.log.writeln('[UPDATE] ' + task.file);
+        grunt.log.writeln('[UPDATE]  ' + task.file);
       } else {
-        grunt.log.writeln('[ADD]    ' + task.file);
+        grunt.log.writeln('[ADD]     ' + task.file);
       }
       cb(err, identical, buf);
     });
