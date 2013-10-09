@@ -37,11 +37,10 @@
     "grunt": "~0.4.1"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin", "s3", "aws"
   ],
   "dependencies": {
     "knox": "~0.8.6",
-    "mime": "~1.2.11",
-    "moment": "~2.3.0"
+    "mime": "~1.2.11"
   }
 }
