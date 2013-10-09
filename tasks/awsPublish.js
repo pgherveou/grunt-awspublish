@@ -29,7 +29,7 @@ var crypto = require('crypto'),
  *     {
  *       src: [],
  *       dest: '/foo',
- *       headers: ''
+ *       headers: {}
  *     }
  *   ]
  * }
@@ -41,7 +41,7 @@ var crypto = require('crypto'),
 // build [file: '', dest: '', params: {}]
 
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   var _ = grunt.util._;
 
   /**
@@ -88,8 +88,8 @@ module.exports = function(grunt) {
 
   /**
    * upload a file to s3
-   * @param  {Knox}   client
-   * @param  {Buffer} buffer
+   * @param  {Knox}     client
+   * @param  {Buffer}   buffer
    * @param  {String}   dest
    * @param  {Object}   headers
    * @param  {Function} cb
@@ -120,7 +120,7 @@ module.exports = function(grunt) {
    * @api private
    */
 
-  function processFile(client, task, cb) {
+  function processFile (client, task, cb) {
     var zipOrNot;
 
     // check file status
@@ -149,6 +149,36 @@ module.exports = function(grunt) {
         if (err) return cb(err);
         upload(client, buf, task.dest, task.headers, cb);
       });
+    });
+  }
+
+  /**
+   * delete existing s3 files that are not on the local disk anymore
+   *
+   * @param  {Knox}   client
+   * @param  {Array}   localFiles
+   * @param  {String}   prefix
+   * @param  {Function} cb
+   *
+   * @api private
+   */
+
+  function deleteMultiple (client, localFiles, prefix, cb) {
+
+    // list remote files
+    client.list({prefix: prefix}, function (err, data) {
+      var s3Files = _.map(data.Contents, 'Key'),
+          removeList = _.reject(s3Files, function (file) {
+            return localFiles.indexOf(file) !== -1;
+          });
+
+      // remove files
+      if (removeList.length) {
+        grunt.log.writeln('[DELETE]  ' + removeList);
+        client.deleteMultiple(removeList, cb);
+      } else {
+        cb();
+      }
     });
   }
 
@@ -193,38 +223,30 @@ module.exports = function(grunt) {
       }, cb);
     });
 
-    // get all files by prefix
-    var prefixes = _.groupBy(tasks, 'prefix');
+    // delete old s3 files?
+    if (options.sync) {
+      // get all files by prefix
+      var prefixes = _.groupBy(tasks, 'prefix');
 
-    // loop over each prefix
-    Object.keys(prefixes).forEach(function (prefix) {
+      // loop over each prefix
+      Object.keys(prefixes).forEach(function (prefix) {
 
-      // get local files
-      var localFiles = _.map(prefixes[prefix], 'dest');
+        // get local files
+        var localFiles = _.map(prefixes[prefix], 'dest');
+
+        // add delete action
+        deleteActions.push(function (cb) {
+          deleteMultiple(client, localFiles, prefix, cb);
+        });
+      });
 
       // register delete action
       flowActions.push(function (cb) {
-        deleteActions.push(function (cb) {
-
-          // get remote files
-          client.list({prefix: prefix}, function (err, data) {
-            var s3Files = _.map(data.Contents, 'Key'),
-                removeList = _.reject(s3Files, function (file) {
-                  return localFiles.indexOf(file) !== -1;
-                });
-
-            // remove
-            grunt.log.writeln('[DELETE] ' + removeList);
-            client.deleteMultiple(removeList, cb);
-          });
-        });
-
-        // execute all delete actions in parallel
         grunt.util.async.parallel(deleteActions, cb);
       });
-    });
+    }
 
-    // trigger async actions
+    // exec upload actions then delete actions
     grunt.util.async.series(flowActions, this.async());
 
   });

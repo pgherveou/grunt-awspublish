@@ -26,58 +26,72 @@ In your project's Gruntfile, add a section named `awsPublish` to the data object
 grunt.initConfig({
   awsPublish: {
     options: {
-      // Task-specific options go here.
+      key: '...', /* amazon api key */
+      secret: '...', /* amazon api secret */
+      bucket: '...', /* amazon d3 bucket */
+      sync: true, /* optional keep s3 dests in sync with local disk */
+      headers: {  /* headers to apply */
+        'x-amz-acl': 'public-read',
+        'Expires': 'Tue, 07 Oct 2014 12:00:00 GMT',
+        'ContentEncoding': 'gzip'
+      }
     },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
+    files: [ /* files key pairs */
+      {
+        src: [],
+        dest: '/foo', /* s3 destination */
+        headers: {}   /* override headers */
+      }
+    ]
   },
 })
 ```
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.sync
+Type: `Boolean`
+Default value: `false`
 
-A string value that is used to do something with whatever.
+Keep s3 dest in sync with local disk (old files will be deleted)
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+#### options.headers
+Type: `Object`
+Default value: `{'x-amz-acl': 'public-read'}`
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
 ```js
 grunt.initConfig({
   awsPublish: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-})
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  awsPublish: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    'test1': {
+      options: {
+        key: '<%= aws.key %>',
+        secret: '<%= aws.secret %>',
+        bucket: '<%= aws.bucket %>',
+        sync: true,
+        headers: {
+          Expires: 'Tue, 07 Oct 2014 12:00:00 GMT'
+        }
+      },
+      files: [
+        {
+          expand: true,
+          cwd: 'test/fixtures',
+          src: 'bar.txt',
+          dest: 'test',
+          headers: {
+            ContentEncoding: 'gzip'
+          }
+        },
+        {
+          expand: true,
+          cwd: 'test/fixtures',
+          src: 'foo.html',
+          dest: 'test'
+        }
+      ]
+    }
   },
 })
 ```

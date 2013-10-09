@@ -33,11 +33,12 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     awsPublish: {
-      'default_options': {
+      'test1': {
         options: {
           key: '<%= aws.key %>',
           secret: '<%= aws.secret %>',
-          bucket: 'test.jogabo.com',
+          bucket: '<%= aws.bucket %>',
+          sync: true,
           headers: {
             foo: 'bar'
           }
@@ -80,7 +81,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'awsPublish'/*, 'nodeunit'*/]);
+  grunt.registerTask('test', ['clean', 'awsPublish', 'nodeunit']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);

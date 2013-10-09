@@ -1,6 +1,8 @@
 'use strict';
 
-var grunt = require('grunt');
+var grunt = require('grunt'),
+    knox = require('knox'),
+    _ = grunt.util._;
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -27,22 +29,16 @@ exports.awsPublish = {
     // setup here if necessary
     done();
   },
-  'default_options': function(test) {
-    test.expect(1);
 
-    var actual = grunt.file.read('tmp/default_options');
-    var expected = grunt.file.read('test/expected/default_options');
-    test.equal(actual, expected, 'should describe what the default behavior is.');
-
-
-  },
-  'custom_options': function(test) {
-    test.expect(1);
-
-    var actual = grunt.file.read('tmp/custom_options');
-    var expected = grunt.file.read('test/expected/custom_options');
-    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
-
-    test.done();
-  },
+  test1: function(test) {
+    var client = knox.createClient(grunt.config.data.aws);
+    client.list({ prefix: 'test' }, function (err, data) {
+      var files = _.map(data.Contents, 'Key');
+      test.equal(null, err);
+      test.equal(2, files.length);
+      test.equal('test/bar.txt', files[0]);
+      test.equal('test/foo.html', files[1]);
+      test.done();
+    });
+  }
 };
