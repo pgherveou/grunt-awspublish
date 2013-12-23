@@ -22,7 +22,7 @@ var crypto = require('crypto'),
  *     headers: {
  *       'x-amz-acl': 'public-read',
  *       'Expires': 'ddd, DD MMM YYYY 12:00:00 GMT',
- *       ContentEncoding: 'gzip'
+ *       Content-Encoding: 'gzip'
  *     }
  *   },
  *   files: [
@@ -155,6 +155,9 @@ module.exports = function (grunt) {
       // zip and upload
       zipOrNot(buf, function (err, buf) {
         if (err) return cb(err);
+        grunt.verbose.writeln('upload task:');
+        grunt.verbose.writeln('file:', task.file);
+        grunt.verbose.writeln('headers:\n', task.headers);
         upload(client, buf, task.dest, task.headers, cb);
       });
     });
@@ -205,6 +208,8 @@ module.exports = function (grunt) {
       client = knox.createClient(options),
       flowActions = [], deleteActions = [],
       tasks = [];
+
+    grunt.log.writeln('Bucket: ', options.bucket);
 
     // iterate over all files pairs
     this.files.forEach(function (f) {

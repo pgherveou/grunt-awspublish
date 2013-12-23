@@ -51,8 +51,7 @@ module.exports = function(grunt) {
             src: 'bar.txt',
             dest: 'test',
             headers: {
-              bar: 'foo',
-              ContentEncoding: 'gzip'
+              'Content-Encoding': 'gzip'
             }
           },
           {
