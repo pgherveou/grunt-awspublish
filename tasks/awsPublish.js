@@ -140,9 +140,6 @@ module.exports = function (grunt) {
       // add content-type header
       task.headers['Content-Type'] = mime.lookup(task.file);
 
-      // add Content-Length header
-      task.headers['Content-Length'] = buf.length;
-
       // zip or not
       if (task.headers['Content-Encoding'] === 'gzip') {
         zipOrNot = zlib.gzip;
@@ -155,6 +152,7 @@ module.exports = function (grunt) {
       // zip and upload
       zipOrNot(buf, function (err, buf) {
         if (err) return cb(err);
+        task.headers['Content-Length'] = buf.length;
         grunt.verbose.writeln('upload task:');
         grunt.verbose.writeln('file:', task.file);
         grunt.verbose.writeln('headers:\n', task.headers);
