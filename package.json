@@ -1,7 +1,7 @@
 {
   "name": "grunt-awspublish",
   "description": "Publish and sync your files to amazon s3",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/pgherveou/awspublish",
   "author": {
     "name": "PG",
@@ -37,7 +37,9 @@
     "grunt": "*"
   },
   "keywords": [
-    "gruntplugin", "s3", "aws"
+    "gruntplugin",
+    "s3",
+    "aws"
   ],
   "dependencies": {
     "knox": "*",
