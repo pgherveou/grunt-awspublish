@@ -7,6 +7,8 @@
 var crypto = require('crypto'),
     knox = require('knox'),
     mime = require('mime'),
+    async = require('async'),
+    _ = require('lodash'),
     zlib = require('zlib');
 
 /*
@@ -42,7 +44,6 @@ var crypto = require('crypto'),
 
 
 module.exports = function (grunt) {
-  var _ = grunt.util._;
 
   /**
    * calculate file hash
@@ -121,7 +122,7 @@ module.exports = function (grunt) {
    */
 
   function processFile (client, task, cb) {
-    var zipOrNot;
+    var tasks = [];
 
     // check file status
     isIdentical(client, task, function (err, identical, buf) {
@@ -140,24 +141,36 @@ module.exports = function (grunt) {
       // add content-type header
       task.headers['Content-Type'] = mime.lookup(task.file);
 
-      // zip or not
+      // zip task
       if (task.headers['Content-Encoding'] === 'gzip') {
-        zipOrNot = zlib.gzip;
-      } else {
-        zipOrNot = function (buf, cb) {
-          cb(null, buf);
-        };
+        tasks.push(
+          function(cb) {
+            zlib.gzip(buf, function(err, buf) {
+              if (err) return cb(err);
+              var headers = _.clone(task.headers);
+              headers['Content-Length'] = buf.length;
+              grunt.verbose.writeln('(gzip) upload task:');
+              grunt.verbose.writeln('file:', task.file);
+              grunt.verbose.writeln('headers:\n', headers);
+              upload(client, buf, task.dest + 'gz', headers, cb);
+            });
+          }
+        );
       }
 
-      // zip and upload
-      zipOrNot(buf, function (err, buf) {
-        if (err) return cb(err);
-        task.headers['Content-Length'] = buf.length;
+      // unzip task
+      tasks.push(function(cb) {
+        var headers = _.clone(task.headers);
+        headers['Content-Length'] = buf.length;
+        delete headers['Content-Encoding'];
         grunt.verbose.writeln('upload task:');
         grunt.verbose.writeln('file:', task.file);
-        grunt.verbose.writeln('headers:\n', task.headers);
-        upload(client, buf, task.dest, task.headers, cb);
+        grunt.verbose.writeln('headers:\n', headers);
+        upload(client, buf, task.dest, headers, cb);
       });
+
+      async.parallel(tasks, cb);
+
     });
   }
 
@@ -178,6 +191,13 @@ module.exports = function (grunt) {
     client.list({prefix: prefix}, function (err, data) {
       var s3Files = _.map(data.Contents, 'Key'),
           removeList = _.reject(s3Files, function (file) {
+
+            // quick fix for gzip files
+            if (file.slice(file.length - 2) === 'gz') {
+              file = file.slice(0, file.length - 2);
+            }
+
+            // check if file exist in local dir
             return localFiles.indexOf(file) !== -1;
           });
 
@@ -232,7 +252,7 @@ module.exports = function (grunt) {
     flowActions.push(function (cb) {
 
       // Iterate over all specified file groups.
-      grunt.util.async.forEachLimit(tasks, 5, function (task, cb) {
+      async.forEachLimit(tasks, 5, function (task, cb) {
         processFile(client, task, cb);
       }, cb);
     });
@@ -256,12 +276,12 @@ module.exports = function (grunt) {
 
       // register delete action
       flowActions.push(function (cb) {
-        grunt.util.async.parallel(deleteActions, cb);
+        async.parallel(deleteActions, cb);
       });
     }
 
     // exec upload actions then delete actions
-    grunt.util.async.series(flowActions, this.async());
+    async.series(flowActions, this.async());
 
   });
 };

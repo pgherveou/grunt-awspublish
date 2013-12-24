@@ -1,32 +1,22 @@
 'use strict';
 
 var grunt = require('grunt'),
+    fs = require('fs'),
     knox = require('knox'),
-    _ = grunt.util._;
+    _ = require('lodash');
 
-/*
-  ======== A Handy Little Nodeunit Reference ========
-  https://github.com/caolan/nodeunit
-
-  Test methods:
-    test.expect(numAssertions)
-    test.done()
-  Test assertions:
-    test.ok(value, [message])
-    test.equal(actual, expected, [message])
-    test.notEqual(actual, expected, [message])
-    test.deepEqual(actual, expected, [message])
-    test.notDeepEqual(actual, expected, [message])
-    test.strictEqual(actual, expected, [message])
-    test.notStrictEqual(actual, expected, [message])
-    test.throws(block, [error], [message])
-    test.doesNotThrow(block, [error], [message])
-    test.ifError(value)
-*/
 
 exports.awspublish = {
+
   setUp: function(done) {
-    // setup here if necessary
+    fs.writeFileSync(__dirname + '/fixtures/bar.txt',
+      'hello hello I dont know why I say goodbye i say hello ' + new Date());
+
+    fs.writeFileSync(__dirname + '/fixtures/foo.html',
+      '<html><head><title>foo ' +
+      new Date() +
+      '</title></head><body>'
+    );
     done();
   },
 
@@ -35,9 +25,7 @@ exports.awspublish = {
     client.list({ prefix: 'test' }, function (err, data) {
       var files = _.map(data.Contents, 'Key');
       test.equal(null, err);
-      test.equal(2, files.length);
-      test.equal('test/bar.txt', files[0]);
-      test.equal('test/foo.html', files[1]);
+      test.equal(3, files.length);
       test.done();
     });
   }

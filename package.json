@@ -1,7 +1,7 @@
 {
   "name": "grunt-awspublish",
   "description": "Publish and sync your files to amazon s3",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "homepage": "https://github.com/pgherveou/awspublish",
   "author": {
     "name": "PG",
@@ -28,19 +28,21 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.1"
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-nodeunit": "*",
+    "grunt": "*"
   },
   "peerDependencies": {
-    "grunt": "~0.4.1"
+    "grunt": "*"
   },
   "keywords": [
     "gruntplugin", "s3", "aws"
   ],
   "dependencies": {
-    "knox": "~0.8.6",
-    "mime": "~1.2.11"
+    "knox": "*",
+    "mime": "*",
+    "lodash": "*",
+    "async": "*"
   }
 }
