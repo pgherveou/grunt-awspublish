@@ -138,9 +138,6 @@ module.exports = function (grunt) {
         task.headers['x-amz-acl'] = 'public-read';
       }
 
-      // add content-type header
-      task.headers['Content-Type'] = mime.lookup(task.file);
-
       // zip task
       if (task.headers['Content-Encoding'] === 'gzip') {
         tasks.push(
