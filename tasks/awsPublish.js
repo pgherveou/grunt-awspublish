@@ -131,7 +131,7 @@ module.exports = function (grunt) {
       if (identical) return cb();
 
       // add content-type header
-      task.headers['Content-Type'] = mime.lookup(task.file);
+      task.headers['Content-Type'] = mime.getType(task.file);
 
       // public by default
       if(!task.headers['x-amz-acl']) {
